@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "testing",
+  "homepage": "https://github.com/focusedaf/Zephyr#readme",
+  "bugs": {
+    "url": "https://github.com/focusedaf/Zephyr/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/focusedaf/Zephyr.git"
+  },
+  "license": "ISC",
+  "author": "focusedaf",
+  "type": "commonjs",
+  "main": "Server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
