@@ -7,13 +7,11 @@ import About from "./Pages/About"
 import Category from "./Pages/Category"
 import Profile from "./Pages/Profile"
 function App() {
-  
-
   return (
     <div className="w-full">
-      <>
+      {/* <>
         <SplashScreen />
-      </>
+      </> */}
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/about" element={<About />}></Route>

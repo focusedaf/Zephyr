@@ -133,7 +133,7 @@ body {
   transition: width 0.1s linear;
   border-radius: 2px;
 }
-.main-content {
+/* .main-content {
   padding-top: 64px;
 }
 .mobile-menu {
@@ -174,4 +174,4 @@ body {
   background: linear-gradient(to bottom, #ffa726, #ff758c, #7b2cbf, #000000);
   height: 300px;
   width: 100%;
-}
+} */
