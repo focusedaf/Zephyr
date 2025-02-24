@@ -1,8 +1,8 @@
 import {Link, NavLink, useNavigate} from 'react-router-dom'
 import { useState } from "react";
-import {Menu,X} from 'lucide-react'
+import { Menu, X } from "lucide-react";
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [Visible, setVisible] = useState(false);
   const navigate = useNavigate();
   const navItems = [
     {name:'Home', slug:'/', active:true},
@@ -42,10 +42,38 @@ const Navbar = () => {
         </div>
       </div>
 
-      <Menu
-        onClick={() => setIsLoggedIn(true)}
-        className="w-6 h-6  text-white hover:text-white md:hidden"
-      />
+      <div className="flex flex-col items-center md:hidden  ">
+        <Menu
+          onClick={() => setVisible(!Visible)}
+          className="w-6 h-6  text-white hover:text-white cursor-pointer"
+        />
+
+        <ul
+          className={`absolute top-20 left-0 right-0 w-full  font-semibold backdrop-blur-sm flex flex-col gap-5 transfrom transistion-transform  ${
+            Visible ? "opacity-100" : "opacity-0"
+          } transform 0.3s ease opacity 0.3s ease `}
+        >
+          <div className="flex justify-end mr-6 ">
+            <X
+              className="w-6 h-6 text-gray-500"
+              onClick={() => setVisible(false)}
+            />
+          </div>
+          {navItems.map(
+            (item) =>
+              item.active && (
+                <NavLink
+                  key={item.name}
+                  onClick={() => setVisible(false)}
+                  className="py-3 pl-6 border block"
+                  to={item.slug}
+                >
+                  {item.name}
+                </NavLink>
+              )
+          )}
+        </ul>
+      </div>
     </div>
   );
 };
