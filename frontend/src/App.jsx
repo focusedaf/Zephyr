@@ -6,6 +6,7 @@ import Contact from "./Pages/Contact";
 import About from "./Pages/About"
 import Category from "./Pages/Category"
 import Profile from "./Pages/Profile"
+import Login from "./Pages/Login"
 function App() {
   return (
     <div className="w-full">
@@ -18,6 +19,7 @@ function App() {
         <Route path="/contact" element={<Contact />}></Route>
         <Route path="/category" element={<Category />}></Route>
         <Route path="/profile" element={<Profile />}></Route>
+        <Route path="/login" element={<Login />}></Route>
       </Routes>
     </div>
   );

@@ -50,7 +50,7 @@ const Navbar = () => {
 
         <ul
           className={`absolute top-20 left-0 right-0 w-full  font-semibold backdrop-blur-sm flex flex-col gap-5 transfrom transistion-transform  ${
-            Visible ? "opacity-100" : "opacity-0"
+            Visible ? "opacity-100" : "opacity-0 pointer-events-none"
           } transform 0.3s ease opacity 0.3s ease `}
         >
           <div className="flex justify-end mr-6 ">
