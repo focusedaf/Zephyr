@@ -9,6 +9,11 @@ const LoginUser = async (req, res) => {
       return res.status(400).send("Credentials required");
     }
 
+    const checkPwd = validatePwd(pwd);
+    if (checkPwd) {
+      return res.status(400).json({ message: checkPwd });
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -30,6 +35,11 @@ const RegisterUser = async (req, res) => {
 
     if (!username || !fullname || !email || !password) {
       return res.status(400).send("Missing Credentials");
+    }
+
+    const checkPwd = validatePwd(password);
+    if (checkPwd) {
+      return res.status(400).json({ message: checkPwd });
     }
 
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
@@ -58,5 +68,24 @@ const RegisterUser = async (req, res) => {
     return res.status(500).send("Server error");
   }
 };
+
+function validatePwd(password) {
+  if (password.length < 8) {
+    return "Password needs to be at least 8 characters";
+  }
+  if (!/[a-z]/.test(password)) {
+    return "Password needs at least one lowercase letter";
+  }
+  if (!/[A-Z]/.test(password)) {
+    return "Password needs at least one uppercase letter";
+  }
+  if (!/[0-9]/.test(password)) {
+    return "Password needs at least one number";
+  }
+  if (!/[^a-zA-Z0-9]/.test(password)) {
+    return "Password needs at least one special character";
+  }
+  return null;
+}
 
 export { LoginUser, RegisterUser };
