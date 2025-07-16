@@ -7,10 +7,59 @@ const LoginForm = ({ className = "" }) => {
   const [pwd, setPwd] = useState("");
   const [pw, showPw] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [msg, setMsg] = useState("");
+  function validatePwd(password) {
+    if (password.length >= 8) {
+      return "Password needs to be at least 8 characters";
+    }
+    if (!/[a-z]/.test(password)) {
+      return "Password needs at least one lowercase letter";
+    }
+    if (!/[A-Z]/.test(password)) {
+      return "Password needs at least one uppercase letter";
+    }
+    if (!/[0-9]/.test(password)) {
+      return "Password needs at least one number";
+    }
+    if (!/[^a-zA-Z0-9]/.test(password)) {
+      return "Password needs at least one special character";
+    }
+    return null;
+  }
+
+  function validateEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
+    setMsg("");
     setLoading(true);
+
+    if (!email || !pwd) {
+      console.log("Credentials are required");
+      setLoading(false);
+      return;
+    }
+
+    const checkPwd = validatePwd(pwd);
+    if (checkPwd) {
+      setErrorMsg(checkPwd);
+      console.log(checkPwd);
+      setLoading(false);
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setErrorMsg("Invalid email format");
+      console.log("Invalid email format");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:4000/api/user/login",
@@ -22,12 +71,14 @@ const LoginForm = ({ className = "" }) => {
           withCredentials: true,
         }
       );
-      console.log(response);
-      
+      setMsg("Logged in successfully");
+      setLoading(false);
+      return;
     } catch (error) {
       console.error("Error logging in", error);
+    } finally {
+      setLoading(false);
     }
-    console.log(email, pwd);
   };
 
   return (
@@ -88,11 +139,12 @@ const LoginForm = ({ className = "" }) => {
           >
             {loading ? "Processing..." : "Login"}
           </button>
+          {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
+          {msg && <p className="text-green-500 text-sm">{msg}</p>}
         </form>
       </div>
     </div>
   );
 };
-
 
 export default LoginForm;
