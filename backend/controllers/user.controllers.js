@@ -1,4 +1,5 @@
 import { User } from "../models/user.models.js";
+import bcrypt from "bcrypt";
 
 // login
 const LoginUser = async (req, res) => {
@@ -14,6 +15,10 @@ const LoginUser = async (req, res) => {
       return res.status(400).json({ message: checkPwd });
     }
 
+    if (!validateEmail(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -21,6 +26,8 @@ const LoginUser = async (req, res) => {
     }
 
     // TODO: Add password validation here using bcrypt or similar
+    const pwdCheck = await bcrypt.compare(pwd, user.password);
+    console.log(pwdCheck);
 
     return res.status(200).send("Logged in successfully");
   } catch (error) {
@@ -42,16 +49,24 @@ const RegisterUser = async (req, res) => {
       return res.status(400).json({ message: checkPwd });
     }
 
+    if (!validateEmail(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
 
     if (existingUser) {
       res.status(409).send("User with this username or email already exists");
     }
+
+    const hash = await bcrypt.hash(password, 10);
+    console.log(hash);
+
     const user = await User.create({
       username,
       fullname,
       email,
-      password,
+      password: hash,
     });
 
     const createdUser = await User.findById(user._id);
@@ -70,7 +85,7 @@ const RegisterUser = async (req, res) => {
 };
 
 function validatePwd(password) {
-  if (password.length < 8) {
+  if (password.length >= 8) {
     return "Password needs to be at least 8 characters";
   }
   if (!/[a-z]/.test(password)) {
@@ -86,6 +101,11 @@ function validatePwd(password) {
     return "Password needs at least one special character";
   }
   return null;
+}
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
 
 export { LoginUser, RegisterUser };
