@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Square, CheckSquare } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = ({ className = "" }) => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,8 @@ const LoginForm = ({ className = "" }) => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
+
   function validatePwd(password) {
     if (password.length < 8) {
       return "Password needs to be at least 8 characters";
@@ -71,11 +74,14 @@ const LoginForm = ({ className = "" }) => {
           withCredentials: true,
         }
       );
+
+      localStorage.setItem("isLoggedIn", "true");
       setMsg("Logged in successfully");
+      navigate("/post");
       setLoading(false);
       return;
     } catch (error) {
-      console.error("Error logging in", error);
+      setErrorMsg("Error logging in");
     } finally {
       setLoading(false);
     }
