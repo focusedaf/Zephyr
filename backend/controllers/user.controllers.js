@@ -1,5 +1,7 @@
 import { User } from "../models/user.models.js";
 import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
+import { setUser } from "../config/map.js";
 
 // login
 const LoginUser = async (req, res) => {
@@ -25,14 +27,19 @@ const LoginUser = async (req, res) => {
       return res.status(404).send("User does not exist");
     }
 
-    // TODO: Add password validation here using bcrypt or similar
     const pwdCheck = await bcrypt.compare(pwd, user.password);
     console.log(pwdCheck);
 
-    return res.status(200).send("Logged in successfully");
+    const sessionID = uuidv4();
+    setUser(sessionID, user);
+    
+    return res
+      .status(200)
+      .cookie("uuid", sessionID, { httpOnly: true })
+      .json({ message: "Logged in successfully" });
   } catch (error) {
     console.error("Error logging in", error);
-    return res.status(500).send("Server error");
+    return res.status(500).json({message:"Server error"});
   }
 };
 // signup
@@ -41,7 +48,7 @@ const RegisterUser = async (req, res) => {
     const { username, fullname, email, password } = req.body;
 
     if (!username || !fullname || !email || !password) {
-      return res.status(400).send("Missing Credentials");
+      return res.status(400).json({message:"Missing Credentials"});
     }
 
     const checkPwd = validatePwd(password);
@@ -56,7 +63,7 @@ const RegisterUser = async (req, res) => {
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
 
     if (existingUser) {
-      res.status(409).send("User with this username or email already exists");
+      res.status(409).json({message:"User with this username or email already exists"});
     }
 
     const hash = await bcrypt.hash(password, 10);
@@ -72,7 +79,7 @@ const RegisterUser = async (req, res) => {
     const createdUser = await User.findById(user._id);
 
     if (!createdUser) {
-      res.status(500).send("Unable to create the user");
+      res.status(500).json({message:"Unable to create the user"});
     }
 
     return res.status(201).json({
@@ -80,12 +87,12 @@ const RegisterUser = async (req, res) => {
     });
   } catch (error) {
     console.log("Error registering user", error);
-    return res.status(500).send("Server error");
+    return res.status(500).json({message:"Server error"});
   }
 };
 
 function validatePwd(password) {
-  if (password.length >= 8) {
+  if (password.length < 8) {
     return "Password needs to be at least 8 characters";
   }
   if (!/[a-z]/.test(password)) {
