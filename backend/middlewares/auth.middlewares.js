@@ -1,4 +1,4 @@
-import { getUser } from "../config/map.js";
+import { getUser } from "../utils/sessionStore.js";
 
 async function LoggedinUsers(req, res, next) {
   const userUid = req.cookies?.uid;
@@ -7,7 +7,7 @@ async function LoggedinUsers(req, res, next) {
     return res.redirect("/user/login");
   }
 
-  const user = getUser(userUid);
+  const user = await getUser(userUid);
 
   if (!user) {
     return res.direct("/user/login");
@@ -16,4 +16,4 @@ async function LoggedinUsers(req, res, next) {
   next();
 }
 
-export {LoggedinUsers}
+export { LoggedinUsers };
