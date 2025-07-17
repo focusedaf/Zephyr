@@ -10,7 +10,7 @@ const LoginForm = ({ className = "" }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [msg, setMsg] = useState("");
   function validatePwd(password) {
-    if (password.length >= 8) {
+    if (password.length < 8) {
       return "Password needs to be at least 8 characters";
     }
     if (!/[a-z]/.test(password)) {
